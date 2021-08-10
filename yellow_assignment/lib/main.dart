@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:yellow_assignment/views/movie_list.dart';
 
 void main() {
   runApp(MyApp());

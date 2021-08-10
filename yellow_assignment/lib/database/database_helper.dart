@@ -86,7 +86,7 @@ class DatabaseHelper {
     return result;
   }
 
-  // Get the 'Map List' [ List<Map> ] and convert it to 'Note List' [ List<Note> ]
+  // Get the 'Map List' [ List<Map> ] and convert it to 'Movie List' [ List<Note> ]
   Future<List<Movie>> getNoteList() async {
     var movieMapList = await getMovieMapList(); // Get 'Map List' from database
     int count =
