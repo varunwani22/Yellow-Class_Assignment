@@ -1,81 +1,38 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:yellow_assignment/database/database_helper.dart';
 import 'package:yellow_assignment/model/movies.dart';
+import 'package:yellow_assignment/views/edit_page.dart';
 
 class MovieList extends StatefulWidget {
-  const MovieList({Key? key}) : super(key: key);
-
   @override
-  _MovieListState createState() => _MovieListState();
+  State<StatefulWidget> createState() {
+    return MovieListState();
+  }
 }
 
-class _MovieListState extends State<MovieList> {
-  int count = 0;
+class MovieListState extends State<MovieList> {
   DatabaseHelper databaseHelper = DatabaseHelper();
-  late List<Movie> movieList;
-
-  ListView getMovieListView() {
-    return ListView.builder(
-      itemCount: count,
-      itemBuilder: (BuildContext context, int position) {
-        return Card(
-          color: Colors.white,
-          elevation: 3.0,
-          child: ListTile(
-            leading: CircleAvatar(
-              backgroundColor: Colors.amber,
-              child: Image(
-                image: NetworkImage('dsdasd'),
-              ),
-            ),
-            title: Text(this.movieList[position].title),
-            subtitle: Text(this.movieList[position].director),
-            trailing: GestureDetector(
-              child: Icon(
-                Icons.delete,
-                color: Colors.amber,
-              ),
-              onTap: () {
-                deteteMovie(context, movieList[position]);
-                navigateToDetail(this.movieList[position], 'Edit Movie');
-              },
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  Future<void> deteteMovie(BuildContext context, Movie movieList) async {
-    int result = await databaseHelper.deleteMovie(movieList.id);
-    if (result != 0) {
-      snackBar(context, 'Movie Deleted Successfully');
-      updateListViews();
-    }
-  }
-
-  void snackBar(BuildContext context, String message) {
-    final snackBar = SnackBar(content: Text(message));
-    // ignore: deprecated_member_use
-    Scaffold.of(context).showSnackBar(snackBar);
-  }
+  List<Movie> movieList;
+  int count = 0;
 
   @override
   Widget build(BuildContext context) {
-    // ignore: unnecessary_null_comparison
     if (movieList == null) {
-      movieList = <Movie>[];
-      updateListViews();
+      movieList = List<Movie>();
+      updateListView();
     }
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Movies'),
       ),
-      body: getMovieListView(),
+      body: getNoteListView(),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
+          debugPrint('FAB clicked');
           navigateToDetail(Movie('', '', ''), 'Add Movie');
         },
         tooltip: 'Add Movie',
@@ -84,19 +41,114 @@ class _MovieListState extends State<MovieList> {
     );
   }
 
-  void navigateToDetail(Movie movie, String s) async {
-    bool result =
-        await Navigator.push(context, MaterialPageRoute(builder: (context) {
-      return MovieEditPage(
-        movie,
-      );
-    }));
+  StaggeredGridView getNoteListView() {
+    TextStyle titleStyle = Theme.of(context).textTheme.subhead;
+
+    return StaggeredGridView.countBuilder(
+      // gridDelegate:
+      //     SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
+      itemCount: count,
+      crossAxisSpacing: 2,
+      mainAxisSpacing: 12,
+      itemBuilder: (BuildContext context, int position) {
+        return Container(
+          decoration: BoxDecoration(
+              color: Colors.transparent,
+              borderRadius: BorderRadius.all(Radius.circular(15))),
+          child: Card(
+            color: Colors.white,
+            elevation: 3.0,
+            child: Column(
+              children: [
+                Container(
+                  child: Image(
+                    width: 230,
+                    height: 200,
+                    image: NetworkImage(this.movieList[position].image),
+                    fit: BoxFit.fill,
+                  ),
+                ),
+                Align(
+                  alignment: Alignment.topLeft,
+                  child: Container(
+                    margin: EdgeInsets.only(top: 5, left: 5),
+                    child: Text(
+                      this.movieList[position].title,
+                      style:
+                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ),
+                Align(
+                    alignment: Alignment.topLeft,
+                    child: Container(
+                        margin: EdgeInsets.only(top: 5, left: 5),
+                        child: Text(this.movieList[position].director))),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    GestureDetector(
+                      child: Icon(
+                        Icons.edit,
+                        color: Colors.grey,
+                      ),
+                      onTap: () {
+                        debugPrint("ListTile Tapped");
+                        navigateToDetail(
+                            this.movieList[position], 'Edit movie');
+                      },
+                    ),
+                    GestureDetector(
+                      child: Icon(
+                        Icons.delete,
+                        color: Colors.grey,
+                      ),
+                      onTap: () {
+                        _delete(context, movieList[position]);
+                      },
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+      crossAxisCount: 2,
+      staggeredTileBuilder: (int index) {
+        return StaggeredTile.count(1, index.isEven ? 1.60 : 1.60);
+      },
+    );
   }
 
-  void updateListViews() {
+  void _delete(BuildContext context, Movie note) async {
+    int result = await databaseHelper.deleteMovie(note.id);
+    if (result != 0) {
+      _showSnackBar(context, 'Movie Deleted Successfully');
+      updateListView();
+    }
+  }
+
+  void _showSnackBar(BuildContext context, String message) {
+    final snackBar = SnackBar(content: Text(message));
+    Scaffold.of(context).showSnackBar(snackBar);
+  }
+
+  void navigateToDetail(Movie movie, String title) async {
+    bool result =
+        await Navigator.push(context, MaterialPageRoute(builder: (context) {
+      return MovieDetail(movie, title);
+    }));
+
+    if (result == true) {
+      updateListView();
+    }
+  }
+
+  void updateListView() {
     final Future<Database> dbFuture = databaseHelper.initializeDatabase();
     dbFuture.then((database) {
-      Future<List<Movie>> movieListFuture = databaseHelper.getMoviesList();
+      Future<List<Movie>> movieListFuture = databaseHelper.getMovieList();
       movieListFuture.then((movieList) {
         setState(() {
           this.movieList = movieList;

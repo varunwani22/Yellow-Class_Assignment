@@ -1,47 +1,55 @@
 class Movie {
-  int id = 0;
-  String movieTitle = '';
-  String directorName = '';
-  String posterImage = '';
+  int _id;
+  String _title;
+  String _director;
+  String _image;
 
-  Movie(this.movieTitle, this.directorName, this.posterImage);
+  Movie(this._title, this._image, [this._director]);
 
-  Movie.withId(this.id, this.movieTitle, this.directorName, this.posterImage);
+  Movie.withId(this._id, this._title, this._image, [this._director]);
 
-  int get ids => id;
-  String get title => movieTitle;
-  String get director => directorName;
-  String get image => posterImage;
+  int get id => _id;
+
+  String get title => _title;
+
+  String get director => _director;
+
+  String get image => _image;
 
   set title(String newTitle) {
-    this.movieTitle = newTitle;
+    if (newTitle.length <= 255) {
+      this._title = newTitle;
+    }
   }
 
-  set director(String newDirector) {
-    this.directorName = newDirector;
+  set director(String newDescription) {
+    if (newDescription.length <= 255) {
+      this._director = newDescription;
+    }
   }
 
-  set image(String newImage) {
-    this.posterImage = newImage;
+  set image(String newDate) {
+    this._image = newDate;
   }
 
+  // Convert a Note object into a Map object
   Map<String, dynamic> toMap() {
     var map = Map<String, dynamic>();
-    // ignore: unnecessary_null_comparison
-    if (ids != null) {
-      map['ids'] = id;
+    if (id != null) {
+      map['id'] = _id;
     }
-    map['title'] = movieTitle;
-    map['director'] = directorName;
-    map['image'] = posterImage;
+    map['title'] = _title;
+    map['director'] = _director;
+    map['image'] = _image;
 
     return map;
   }
 
-  Movie.fromMap(Map<String, dynamic> map) {
-    this.id = map['ids'];
-    this.movieTitle = map['title'];
-    this.directorName = map['director'];
-    this.posterImage = map['image'];
+  // Extract a Note object from a Map object
+  Movie.fromMapObject(Map<String, dynamic> map) {
+    this._id = map['id'];
+    this._title = map['title'];
+    this._director = map['director'];
+    this._image = map['image'];
   }
 }
