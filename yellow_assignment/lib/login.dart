@@ -72,11 +72,14 @@ class _LoginState extends State<Login> {
     return Scaffold(
         body: SingleChildScrollView(
       child: Container(
+        color: Colors.white,
         child: Column(
           children: <Widget>[
             Container(
               height: 400,
               child: Image(
+                height: 200,
+                width: 200,
                 image: NetworkImage(
                     'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRBVhtJrLye-kdTIJFj0nb2wPWusddZrz9Tbg&usqp=CAU'),
                 fit: BoxFit.contain,
@@ -127,6 +130,9 @@ class _LoginState extends State<Login> {
                   ],
                 ),
               ),
+            ),
+            SizedBox(
+              height: 20,
             ),
             GestureDetector(
               child: Text('Create an Account?'),

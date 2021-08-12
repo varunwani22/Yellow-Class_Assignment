@@ -32,7 +32,7 @@ class Movie {
     this._image = newDate;
   }
 
-  // Convert a Note object into a Map object
+  // Convert a Movie object into a Map object
   Map<String, dynamic> toMap() {
     var map = Map<String, dynamic>();
     if (id != null) {
@@ -45,7 +45,7 @@ class Movie {
     return map;
   }
 
-  // Extract a Note object from a Map object
+  // Extract a Movie object from a Map object
   Movie.fromMapObject(Map<String, dynamic> map) {
     this._id = map['id'];
     this._title = map['title'];

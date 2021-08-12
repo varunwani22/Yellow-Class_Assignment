@@ -54,7 +54,6 @@ class MovieDetailState extends State<MovieDetail> {
             padding: EdgeInsets.only(top: 15.0, left: 10.0, right: 10.0),
             child: ListView(
               children: <Widget>[
-                // 1 Element
                 Padding(
                   padding: EdgeInsets.only(top: 15.0, bottom: 15.0),
                   child: TextField(
@@ -71,8 +70,6 @@ class MovieDetailState extends State<MovieDetail> {
                             borderRadius: BorderRadius.circular(5.0))),
                   ),
                 ),
-
-                // 2 Element
                 Padding(
                   padding: EdgeInsets.only(top: 15.0, bottom: 15.0),
                   child: TextField(
@@ -89,7 +86,6 @@ class MovieDetailState extends State<MovieDetail> {
                             borderRadius: BorderRadius.circular(5.0))),
                   ),
                 ),
-                //3rd element
                 Padding(
                   padding: EdgeInsets.only(top: 15.0, bottom: 15.0),
                   child: TextField(
@@ -106,8 +102,6 @@ class MovieDetailState extends State<MovieDetail> {
                             borderRadius: BorderRadius.circular(5.0))),
                   ),
                 ),
-
-                // Fourth Element
                 Padding(
                   padding: EdgeInsets.only(top: 15.0, bottom: 15.0),
                   child: Row(
@@ -160,12 +154,12 @@ class MovieDetailState extends State<MovieDetail> {
     Navigator.pop(context, true);
   }
 
-  // Update the title of Note object
+  // Update the title
   void updateTitle() {
     movie.title = titleController.text;
   }
 
-  // Update the description of Note object
+  // Update the director
   void updateDirector() {
     movie.director = directorController.text;
   }
@@ -178,7 +172,6 @@ class MovieDetailState extends State<MovieDetail> {
   void _save() async {
     moveToLastScreen();
 
-    // movie.image = DateFormat.yMMMd().format(DateTime.now());
     int result;
     if (movie.id != null) {
       // Case 1: Update operation
@@ -197,17 +190,15 @@ class MovieDetailState extends State<MovieDetail> {
     }
   }
 
+//deleting the data
   void _delete() async {
     moveToLastScreen();
 
-    // Case 1: If user is trying to delete the NEW NOTE i.e. he has come to
-    // the detail page by pressing the FAB of NoteList page.
     if (movie.id == null) {
       _showAlertDialog('Status', 'No Movie was deleted');
       return;
     }
 
-    // Case 2: User is trying to delete the old note that already has a valid ID.
     int result = await helper.deleteMovie(movie.id);
     if (result != 0) {
       _showAlertDialog('Status', 'Movie Deleted Successfully');
@@ -216,6 +207,7 @@ class MovieDetailState extends State<MovieDetail> {
     }
   }
 
+//showing dialogbox
   void _showAlertDialog(String title, String message) {
     AlertDialog alertDialog = AlertDialog(
       title: Text(title),

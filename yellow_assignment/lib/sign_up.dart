@@ -34,12 +34,7 @@ class _SignUpState extends State<SignUp> {
         UserCredential user = await _auth.createUserWithEmailAndPassword(
             email: _email, password: _password);
         if (user != null) {
-          // UserUpdateInfo updateuser = UserUpdateInfo();
-          // updateuser.displayName = _name;
-          //  user.updateProfile(updateuser);
           await _auth.currentUser.updateProfile(displayName: _name);
-          // await Navigator.pushReplacementNamed(context,"/") ;
-
         }
       } catch (e) {
         showError(e.message);
@@ -76,6 +71,8 @@ class _SignUpState extends State<SignUp> {
             Container(
               height: 400,
               child: Image(
+                height: 200,
+                width: 200,
                 image: NetworkImage(
                     'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRBVhtJrLye-kdTIJFj0nb2wPWusddZrz9Tbg&usqp=CAU'),
                 fit: BoxFit.contain,

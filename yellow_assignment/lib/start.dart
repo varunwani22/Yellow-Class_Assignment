@@ -46,12 +46,15 @@ class _StartState extends State<Start> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
+        color: Colors.white,
         child: Column(
           children: <Widget>[
             SizedBox(height: 35.0),
             Container(
               height: 400,
               child: Image(
+                height: 200,
+                width: 200,
                 image: NetworkImage(
                     'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRBVhtJrLye-kdTIJFj0nb2wPWusddZrz9Tbg&usqp=CAU'),
                 fit: BoxFit.contain,
@@ -62,22 +65,17 @@ class _StartState extends State<Start> {
                 text: TextSpan(
                     text: 'Welcome to ',
                     style: TextStyle(
-                        fontSize: 25.0,
+                        fontSize: 20.0,
                         fontWeight: FontWeight.bold,
                         color: Colors.black),
                     children: <TextSpan>[
                   TextSpan(
-                      text: 'X Groceries',
+                      text: 'Yellow Class Movies',
                       style: TextStyle(
-                          fontSize: 30.0,
+                          fontSize: 25.0,
                           fontWeight: FontWeight.bold,
                           color: Colors.red))
                 ])),
-            SizedBox(height: 10.0),
-            Text(
-              'Fresh Groceries Delivered at your Doorstep',
-              style: TextStyle(color: Colors.black),
-            ),
             SizedBox(height: 30.0),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,

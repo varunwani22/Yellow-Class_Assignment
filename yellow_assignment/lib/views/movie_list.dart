@@ -6,7 +6,6 @@ import 'package:sqflite/sqflite.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:yellow_assignment/database/database_helper.dart';
 import 'package:yellow_assignment/model/movies.dart';
-import 'package:yellow_assignment/start.dart';
 import 'package:yellow_assignment/views/edit_page.dart';
 
 class MovieList extends StatefulWidget {
@@ -24,6 +23,7 @@ class MovieListState extends State<MovieList> {
   List<Movie> movieList;
   int count = 0;
 
+//checking Authentification
   checkAuthentification() async {
     _auth.authStateChanges().listen((user) {
       if (user == null) {
@@ -32,6 +32,7 @@ class MovieListState extends State<MovieList> {
     });
   }
 
+//getting user
   getUser() async {
     User firebaseUser = _auth.currentUser;
     await firebaseUser?.reload();
@@ -45,6 +46,7 @@ class MovieListState extends State<MovieList> {
     }
   }
 
+//signing out
   signOut() async {
     _auth.signOut();
 
@@ -93,8 +95,6 @@ class MovieListState extends State<MovieList> {
     TextStyle titleStyle = Theme.of(context).textTheme.subhead;
 
     return StaggeredGridView.countBuilder(
-      // gridDelegate:
-      //     SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
       itemCount: count,
       crossAxisSpacing: 2,
       mainAxisSpacing: 12,
@@ -193,6 +193,7 @@ class MovieListState extends State<MovieList> {
     }
   }
 
+//updating listview
   void updateListView() {
     final Future<Database> dbFuture = databaseHelper.initializeDatabase();
     dbFuture.then((database) {

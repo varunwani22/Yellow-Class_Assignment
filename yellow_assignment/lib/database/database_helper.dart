@@ -18,8 +18,7 @@ class DatabaseHelper {
 
   factory DatabaseHelper() {
     if (_databaseHelper == null) {
-      _databaseHelper = DatabaseHelper
-          ._createInstance(); // This is executed only once, singleton object
+      _databaseHelper = DatabaseHelper._createInstance(); // singleton object
     }
     return _databaseHelper;
   }
@@ -48,23 +47,22 @@ class DatabaseHelper {
         '$colDirector TEXT, $colImage TEXT)');
   }
 
-  // Fetch Operation: Get all note objects from database
+  // Fetch Operation: Get all movies objects from database
   Future<List<Map<String, dynamic>>> getMovieMapList() async {
     Database db = await this.database;
 
-//		var result = await db.rawQuery('SELECT * FROM $noteTable order by $colPriority ASC');
     var result = await db.query(movieTable);
     return result;
   }
 
-  // Insert Operation: Insert a Note object to database
+  // Insert Operation: Insert a movie object to database
   Future<int> insertMovie(Movie note) async {
     Database db = await this.database;
     var result = await db.insert(movieTable, note.toMap());
     return result;
   }
 
-  // Update Operation: Update a Note object and save it to database
+  // Update Operation: Update a moovie object and save it to database
   Future<int> updateMovie(Movie movie) async {
     var db = await this.database;
     var result = await db.update(movieTable, movie.toMap(),
@@ -72,7 +70,7 @@ class DatabaseHelper {
     return result;
   }
 
-  // Delete Operation: Delete a Note object from database
+  // Delete Operation: Delete a movie object from database
   Future<int> deleteMovie(int id) async {
     var db = await this.database;
     int result =
@@ -80,23 +78,14 @@ class DatabaseHelper {
     return result;
   }
 
-  // Get number of Note objects in database
-  Future<int> getCount() async {
-    Database db = await this.database;
-    List<Map<String, dynamic>> x =
-        await db.rawQuery('SELECT COUNT (*) from $movieTable');
-    int result = Sqflite.firstIntValue(x);
-    return result;
-  }
-
-  // Get the 'Map List' [ List<Map> ] and convert it to 'Note List' [ List<Note> ]
+  // Get the 'Map List' [ List<Map> ] and convert it to 'Movie List' [ List<Movie> ]
   Future<List<Movie>> getMovieList() async {
     var movieMapList = await getMovieMapList(); // Get 'Map List' from database
     int count =
         movieMapList.length; // Count the number of map entries in db table
 
     List<Movie> movieList = List<Movie>();
-    // For loop to create a 'Note List' from a 'Map List'
+    // For loop to create a 'Movie List' from a 'Map List'
     for (int i = 0; i < count; i++) {
       movieList.add(Movie.fromMapObject(movieMapList[i]));
     }
