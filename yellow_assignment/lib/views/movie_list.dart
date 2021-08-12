@@ -1,9 +1,12 @@
 import 'dart:async';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:yellow_assignment/database/database_helper.dart';
 import 'package:yellow_assignment/model/movies.dart';
+import 'package:yellow_assignment/start.dart';
 import 'package:yellow_assignment/views/edit_page.dart';
 
 class MovieList extends StatefulWidget {
@@ -14,9 +17,47 @@ class MovieList extends StatefulWidget {
 }
 
 class MovieListState extends State<MovieList> {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  User user;
+  bool isloggedin = false;
   DatabaseHelper databaseHelper = DatabaseHelper();
   List<Movie> movieList;
   int count = 0;
+
+  checkAuthentification() async {
+    _auth.authStateChanges().listen((user) {
+      if (user == null) {
+        Navigator.of(context).pushReplacementNamed("start");
+      }
+    });
+  }
+
+  getUser() async {
+    User firebaseUser = _auth.currentUser;
+    await firebaseUser?.reload();
+    firebaseUser = _auth.currentUser;
+
+    if (firebaseUser != null) {
+      setState(() {
+        this.user = firebaseUser;
+        this.isloggedin = true;
+      });
+    }
+  }
+
+  signOut() async {
+    _auth.signOut();
+
+    final googleSignIn = GoogleSignIn();
+    await googleSignIn.signOut();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    this.checkAuthentification();
+    this.getUser();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,8 +69,15 @@ class MovieListState extends State<MovieList> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Movies'),
+        actions: [
+          ElevatedButton(
+            onPressed: signOut,
+            child: Icon(Icons.logout_rounded),
+          ),
+        ],
       ),
-      body: getNoteListView(),
+      body: Container(
+          child: !isloggedin ? CircularProgressIndicator() : getNoteListView()),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           debugPrint('FAB clicked');
